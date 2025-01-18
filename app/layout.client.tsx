@@ -22,7 +22,7 @@ export default function RootLayoutClient({
               variant="ghost"
               size="icon"
               className="h-10 w-10"
-              onClick={() => window.open('https://github.com/your-repo', '_blank')}
+              onClick={() => window.open('https://github.com/zoejane/zmusic-pal', '_blank')}
             >
               <Github className="h-6 w-6" />
               <span className="sr-only">GitHub</span>
