@@ -18,7 +18,11 @@ app = FastAPI()
 # 配置 CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://zmusic-pal-web.vercel.app"],
+    allow_origins=[
+        "https://zmusic-pal-web.vercel.app",
+        "http://localhost:3000",
+        "http://localhost:3001",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
