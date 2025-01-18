@@ -23,17 +23,18 @@ export default function AIPal() {
       console.log('Sending message:', input)
       const aiResponse = await sendMessage(input)
       console.log('Received response:', aiResponse)
-      setResponse(aiResponse)
       setInput('')
+      setIsLoading(false)
+      setResponse(aiResponse)
     } catch (error) {
       console.error('Error:', error)
+      setIsLoading(false)
       if ((error as any)?.message?.includes('Network')) {
         setError('抱歉，AI 伙伴暂时无法连接。请确保后端服务已启动，或稍后再试。')
       } else {
         setError('抱歉，AI 伙伴遇到了一些问题。请稍后再试，或联系管理员获取帮助。')
       }
     }
-    setIsLoading(false)
   }
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
