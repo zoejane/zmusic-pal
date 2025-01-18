@@ -64,6 +64,24 @@ export default function AIPal() {
   return (
     <CardWrapper title="AI 伙伴 / AI Pal">
       <div className="flex flex-col gap-4">
+        {(response || error || isLoading) && (
+          <div className="flex flex-col gap-4 min-h-[100px] border-2 border-primary p-4 rounded-md bg-muted/10">
+            {error ? (
+              <div className="p-3 bg-destructive/10 text-destructive rounded-md text-sm">
+                {error}
+              </div>
+            ) : null}
+            {shouldShowResponse ? (
+              <div className="p-3 bg-background rounded-md whitespace-pre-wrap border border-muted">
+                {response}
+              </div>
+            ) : isLoading ? (
+              <div className="text-muted-foreground text-sm italic">
+                思考中...
+              </div>
+            ) : null}
+          </div>
+        )}
         <Textarea
           placeholder="让我们聊聊音乐吧。/ Let's talk about music."
           value={input}
@@ -78,18 +96,6 @@ export default function AIPal() {
         >
           {isLoading ? '思考中...' : '发送'}
         </Button>
-        <div className="flex flex-col gap-4 min-h-[100px] border border-muted p-4 rounded-md">
-          {error && (
-            <div className="p-3 bg-destructive/10 text-destructive rounded-md text-sm">
-              {error}
-            </div>
-          )}
-          {shouldShowResponse && (
-            <div className="p-3 bg-muted/30 rounded-md whitespace-pre-wrap">
-              {response}
-            </div>
-          )}
-        </div>
       </div>
     </CardWrapper>
   )
