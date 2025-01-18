@@ -32,9 +32,8 @@ export default function AIPal() {
       } else {
         setError('抱歉，AI 伙伴遇到了一些问题。请稍后再试，或联系管理员获取帮助。')
       }
-    } finally {
-      setIsLoading(false)
     }
+    setIsLoading(false)
   }
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
