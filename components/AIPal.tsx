@@ -55,6 +55,16 @@ export default function AIPal() {
     console.log('Current loading state:', isLoading)
   }, [response, error, isLoading])
 
+  console.log('Rendering with states:', { response, error, isLoading })
+
+  const responseElement = response ? (
+    <div className="mt-4 p-3 bg-muted/30 rounded-md whitespace-pre-wrap">
+      {response}
+    </div>
+  ) : null
+
+  console.log('Response element:', responseElement)
+
   return (
     <CardWrapper title="AI 伙伴 / AI Pal">
       <div className="space-y-4">
@@ -72,16 +82,12 @@ export default function AIPal() {
         >
           {isLoading ? '思考中...' : '发送'}
         </Button>
-        {error ? (
+        {error && (
           <div className="p-3 bg-destructive/10 text-destructive rounded-md text-sm">
             {error}
           </div>
-        ) : null}
-        {response ? (
-          <div className="mt-4 p-3 bg-muted/30 rounded-md whitespace-pre-wrap">
-            {response}
-          </div>
-        ) : null}
+        )}
+        {responseElement}
       </div>
     </CardWrapper>
   )
