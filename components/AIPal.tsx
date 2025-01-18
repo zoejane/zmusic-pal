@@ -15,6 +15,7 @@ export default function AIPal() {
   const handleSubmit = async () => {
     if (!input.trim() || isLoading) return
 
+    console.log('Starting submission...')
     setIsLoading(true)
     setError('')
     setResponse('')
@@ -23,8 +24,10 @@ export default function AIPal() {
       console.log('Sending message:', input)
       const aiResponse = await sendMessage(input)
       console.log('Received response:', aiResponse)
-      setInput('')
+      console.log('Setting response state...')
       setResponse(aiResponse)
+      console.log('Response state set')
+      setInput('')
     } catch (error) {
       console.error('Error:', error)
       if ((error as any)?.message?.includes('Network')) {
@@ -33,7 +36,9 @@ export default function AIPal() {
         setError('抱歉，AI 伙伴遇到了一些问题。请稍后再试，或联系管理员获取帮助。')
       }
     } finally {
+      console.log('Setting loading state to false...')
       setIsLoading(false)
+      console.log('Loading state set to false')
     }
   }
 
@@ -43,6 +48,12 @@ export default function AIPal() {
       handleSubmit()
     }
   }
+
+  useEffect(() => {
+    console.log('Current response state:', response)
+    console.log('Current error state:', error)
+    console.log('Current loading state:', isLoading)
+  }, [response, error, isLoading])
 
   return (
     <CardWrapper title="AI 伙伴 / AI Pal">
@@ -61,16 +72,18 @@ export default function AIPal() {
         >
           {isLoading ? '思考中...' : '发送'}
         </Button>
-        {error && (
-          <div className="p-3 bg-destructive/10 text-destructive rounded-md text-sm">
-            {error}
-          </div>
-        )}
-        {!error && response && (
-          <div className="mt-4 p-3 bg-muted/30 rounded-md whitespace-pre-wrap">
-            {response}
-          </div>
-        )}
+        <div>
+          {error && (
+            <div className="p-3 bg-destructive/10 text-destructive rounded-md text-sm">
+              {error}
+            </div>
+          )}
+          {!error && response && (
+            <div className="mt-4 p-3 bg-muted/30 rounded-md whitespace-pre-wrap">
+              {response}
+            </div>
+          )}
+        </div>
       </div>
     </CardWrapper>
   )
