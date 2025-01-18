@@ -36,11 +36,12 @@ function generateScale(rootNote: string, scaleType: string): string[] | { ascend
   if (rootIndex === -1) rootIndex = sharpNotes.indexOf(rootNote)
 
   if (scaleType.includes('Melodic Minor')) {
-    const ascending = pattern.ascending.map(interval => getProperNoteName((rootIndex + interval) % 12, rootNote))
-    const descending = pattern.descending.map(interval => getProperNoteName((rootIndex + interval) % 12, rootNote))
+    const p = pattern as { ascending: number[], descending: number[] }
+    const ascending = p.ascending.map(interval => getProperNoteName((rootIndex + interval) % 12, rootNote))
+    const descending = p.descending.map(interval => getProperNoteName((rootIndex + interval) % 12, rootNote))
     return { ascending, descending }
   } else {
-    return pattern.map(interval => getProperNoteName((rootIndex + interval) % 12, rootNote))
+    return (pattern as number[]).map(interval => getProperNoteName((rootIndex + interval) % 12, rootNote))
   }
 }
 
