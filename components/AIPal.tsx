@@ -57,6 +57,10 @@ export default function AIPal() {
 
   console.log('Rendering with states:', { response, error, isLoading })
 
+  const shouldShowResponse = !error && response
+  console.log('Should show response:', shouldShowResponse)
+  console.log('Response content:', response)
+
   return (
     <CardWrapper title="AI 伙伴 / AI Pal">
       <div className="flex flex-col gap-4">
@@ -74,13 +78,13 @@ export default function AIPal() {
         >
           {isLoading ? '思考中...' : '发送'}
         </Button>
-        <div className="flex flex-col gap-4 min-h-[100px]">
+        <div className="flex flex-col gap-4 min-h-[100px] border border-muted p-4 rounded-md">
           {error && (
             <div className="p-3 bg-destructive/10 text-destructive rounded-md text-sm">
               {error}
             </div>
           )}
-          {response && (
+          {shouldShowResponse && (
             <div className="p-3 bg-muted/30 rounded-md whitespace-pre-wrap">
               {response}
             </div>
