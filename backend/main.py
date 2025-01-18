@@ -15,6 +15,7 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:3000",  # 本地开发环境
         "https://zmusic-pal.vercel.app",  # Vercel 部署地址
+        "https://zmusic-pal-web.vercel.app",  # 新的 Vercel 部署地址
     ],
     allow_credentials=True,
     allow_methods=["*"],
