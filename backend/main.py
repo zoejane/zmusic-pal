@@ -15,6 +15,12 @@ load_dotenv()
 
 app = FastAPI()
 
+class ChatMessage(BaseModel):
+    content: str
+
+class ChatResponse(BaseModel):
+    response: str
+
 @app.options("/api/chat")
 async def options_chat():
     return JSONResponse(
@@ -43,12 +49,6 @@ async def chat(message: ChatMessage):
         )
         error_response.headers["Access-Control-Allow-Origin"] = "https://zmusic-pal-web.vercel.app"
         return error_response
-
-class ChatMessage(BaseModel):
-    content: str
-
-class ChatResponse(BaseModel):
-    response: str
 
 DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
 DEEPSEEK_API_URL = "https://api.deepseek.com/v1/chat/completions"
