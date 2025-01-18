@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.base import BaseHTTPMiddleware
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 import httpx
 import os
@@ -12,7 +13,11 @@ app = FastAPI()
 
 class CORSMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
-        response = await call_next(request)
+        if request.method == "OPTIONS":
+            response = JSONResponse(content={})
+        else:
+            response = await call_next(request)
+            
         response.headers["Access-Control-Allow-Origin"] = "*"
         response.headers["Access-Control-Allow-Methods"] = "*"
         response.headers["Access-Control-Allow-Headers"] = "*"
