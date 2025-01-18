@@ -57,17 +57,9 @@ export default function AIPal() {
 
   console.log('Rendering with states:', { response, error, isLoading })
 
-  const responseElement = response ? (
-    <div className="mt-4 p-3 bg-muted/30 rounded-md whitespace-pre-wrap">
-      {response}
-    </div>
-  ) : null
-
-  console.log('Response element:', responseElement)
-
   return (
     <CardWrapper title="AI 伙伴 / AI Pal">
-      <div className="space-y-4">
+      <div className="flex flex-col gap-4">
         <Textarea
           placeholder="让我们聊聊音乐吧。/ Let's talk about music."
           value={input}
@@ -82,12 +74,18 @@ export default function AIPal() {
         >
           {isLoading ? '思考中...' : '发送'}
         </Button>
-        {error && (
-          <div className="p-3 bg-destructive/10 text-destructive rounded-md text-sm">
-            {error}
-          </div>
-        )}
-        {responseElement}
+        <div className="flex flex-col gap-4 min-h-[100px]">
+          {error && (
+            <div className="p-3 bg-destructive/10 text-destructive rounded-md text-sm">
+              {error}
+            </div>
+          )}
+          {response && (
+            <div className="p-3 bg-muted/30 rounded-md whitespace-pre-wrap">
+              {response}
+            </div>
+          )}
+        </div>
       </div>
     </CardWrapper>
   )
