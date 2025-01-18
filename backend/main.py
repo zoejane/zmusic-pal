@@ -1,7 +1,5 @@
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.middleware.base import BaseHTTPMiddleware
-from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 import httpx
 import os
@@ -11,19 +9,21 @@ load_dotenv()
 
 app = FastAPI()
 
-class CORSMiddleware(BaseHTTPMiddleware):
-    async def dispatch(self, request: Request, call_next):
-        if request.method == "OPTIONS":
-            response = JSONResponse(content={})
-        else:
-            response = await call_next(request)
-            
-        response.headers["Access-Control-Allow-Origin"] = "*"
-        response.headers["Access-Control-Allow-Methods"] = "*"
-        response.headers["Access-Control-Allow-Headers"] = "*"
-        return response
+# 配置 CORS
+origins = [
+    "http://localhost:3000",
+    "https://zmusic-pal.vercel.app",
+    "https://zmusic-pal-web.vercel.app",
+]
 
-app.add_middleware(CORSMiddleware)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=False,
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["*"],
+    max_age=86400,  # 预检请求的缓存时间（24小时）
+)
 
 class ChatMessage(BaseModel):
     content: str
