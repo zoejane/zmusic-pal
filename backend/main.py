@@ -19,9 +19,10 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://zmusic-pal-web.vercel.app",
         "http://localhost:3000",
         "http://localhost:3001",
+        "https://zmusic-pal-web.vercel.app",
+        "https://zmusic-pal.zeabur.app"
     ],
     allow_credentials=False,
     allow_methods=["*"],
