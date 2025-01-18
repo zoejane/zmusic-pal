@@ -24,9 +24,18 @@ async def options_chat():
 @app.post("/api/chat", response_model=ChatResponse)
 async def chat(message: ChatMessage):
     """处理聊天请求"""
-    response = JSONResponse(content={"response": await get_ai_response(message.content)})
-    response.headers["Access-Control-Allow-Origin"] = "https://zmusic-pal-web.vercel.app"
-    return response
+    try:
+        response_text = await get_ai_response(message.content)
+        response = JSONResponse(content={"response": response_text})
+        response.headers["Access-Control-Allow-Origin"] = "https://zmusic-pal-web.vercel.app"
+        return response
+    except Exception as e:
+        error_response = JSONResponse(
+            status_code=500,
+            content={"detail": str(e)}
+        )
+        error_response.headers["Access-Control-Allow-Origin"] = "https://zmusic-pal-web.vercel.app"
+        return error_response
 
 class ChatMessage(BaseModel):
     content: str
