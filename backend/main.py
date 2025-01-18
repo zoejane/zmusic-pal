@@ -34,17 +34,6 @@ class ChatMessage(BaseModel):
 class ChatResponse(BaseModel):
     response: str
 
-@app.options("/api/chat")
-async def options_chat():
-    return JSONResponse(
-        content={},
-        headers={
-            "Access-Control-Allow-Origin": "https://zmusic-pal-web.vercel.app",
-            "Access-Control-Allow-Methods": "POST, OPTIONS",
-            "Access-Control-Allow-Headers": "Content-Type",
-        },
-    )
-
 @app.post("/api/chat")
 async def chat(message: ChatMessage):
     """处理聊天请求"""
