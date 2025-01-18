@@ -49,20 +49,20 @@ function generateTriads(scale: string[] | { ascending: string[], descending: str
   let scaleNotes: string[];
 
   if (scaleType.includes('Major')) {
-    triadTypes = ['', 'm', 'm', '', '', 'm']
+    triadTypes = ['', 'm', 'm', '', '', 'm', 'dim']
     scaleNotes = scale as string[]
   } else if (scaleType.includes('Natural Minor')) {
-    triadTypes = ['m', '°', '', 'm', 'm', '']
+    triadTypes = ['m', 'dim', '', 'm', 'm', '', '']
     scaleNotes = scale as string[]
   } else if (scaleType.includes('Harmonic Minor')) {
-    triadTypes = ['m', '°', '+', 'm', '', '']
+    triadTypes = ['m', 'dim', 'aug', 'm', '', '', 'dim']
     scaleNotes = scale as string[]
   } else { // Melodic Minor
-    triadTypes = ['m', 'm', '+', '', '', '°']
+    triadTypes = ['m', 'm', 'aug', '', '', 'dim', 'dim']
     scaleNotes = (scale as { ascending: string[] }).ascending
   }
 
-  return scaleNotes.slice(0, 6).map((note, index) => {
+  return scaleNotes.slice(0, 7).map((note, index) => {
     const triadType = triadTypes[index]
     const chordNotes = [
       scaleNotes[index],
@@ -70,7 +70,7 @@ function generateTriads(scale: string[] | { ascending: string[], descending: str
       scaleNotes[(index + 4) % 7]
     ]
     return {
-      degree: ['I', 'ii', 'iii', 'IV', 'V', 'vi'][index],
+      degree: ['I', 'ii', 'iii', 'IV', 'V', 'vi', 'vii'][index],
       chord: `${note}${triadType}`,
       notes: chordNotes.join(' - ')
     }
@@ -85,57 +85,65 @@ export default function KeyFinder() {
   const commonTriads = useMemo(() => generateTriads(scaleNotes, scale), [scaleNotes, scale])
 
   return (
-    <CardWrapper title={<span className="text-center block">查调 / Key Finder</span>}>
-      <div className="space-y-4 p-2 sm:p-4">
-        <div className="flex flex-row space-x-2 justify-center">
-          <Select onValueChange={setRootNote} value={rootNote}>
-            <SelectTrigger className="w-[80px] h-8 bg-background border-input">
-              <SelectValue placeholder="根音" />
-            </SelectTrigger>
-            <SelectContent>
-              {rootNotes.map((note) => (
-                <SelectItem key={note} value={note}>{note}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Select onValueChange={setScale} value={scale}>
-            <SelectTrigger className="w-[220px] h-8 bg-background border-input">
-              <SelectValue placeholder="调式 / Scale" />
-            </SelectTrigger>
-            <SelectContent>
-              {scales.map((s) => (
-                <SelectItem key={s} value={s}>{s}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+    <CardWrapper title="查调 / Key Finder">
+      <div className="space-y-4">
+        <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex-1">
+            <Select value={rootNote} onValueChange={setRootNote}>
+              <SelectTrigger>
+                <SelectValue placeholder="选择音名" />
+              </SelectTrigger>
+              <SelectContent>
+                {rootNotes.map((note) => (
+                  <SelectItem key={note} value={note}>
+                    {note}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex-1">
+            <Select value={scale} onValueChange={setScale}>
+              <SelectTrigger>
+                <SelectValue placeholder="选择调式" />
+              </SelectTrigger>
+              <SelectContent>
+                {scales.map((s) => (
+                  <SelectItem key={s} value={s}>
+                    {s}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
-        <div className="bg-accent bg-opacity-50 p-2 rounded-md text-center">
-          <h3 className="font-semibold text-primary text-sm mb-1">音阶 / Scale</h3>
+        <div className="bg-muted/30 rounded-md p-4">
+          <h3 className="font-medium mb-2">音阶 / Scale</h3>
           {scale.includes('Melodic Minor') ? (
             <>
-              <p className="text-foreground text-sm">
+              <p className="text-sm mb-1">
                 上行 / Ascending: {(scaleNotes as { ascending: string[] }).ascending.join(' ')}
               </p>
-              <p className="text-foreground text-sm">
+              <p className="text-sm">
                 下行 / Descending: {(scaleNotes as { descending: string[] }).descending.join(' ')}
               </p>
             </>
           ) : (
-            <p className="text-foreground text-sm">{(scaleNotes as string[]).join(' ')}</p>
+            <p className="text-sm">
+              {(scaleNotes as string[]).join(' ')}
+            </p>
           )}
         </div>
-        <div className="bg-secondary bg-opacity-50 p-2 rounded-md text-center">
-          <h3 className="font-semibold text-primary text-sm mb-2">常用三和弦 / Common Triads</h3>
-          <div className="inline-block text-left overflow-x-auto max-w-full">
-            <pre className="text-sm font-mono whitespace-pre">
-              {commonTriads.map((triad, index) => (
-                <div key={index} className="grid grid-cols-[30px_40px_1fr] gap-x-2">
-                  <span className="font-semibold">{triad.degree.padEnd(3)}</span>
-                  <span>{triad.chord.padEnd(4)}</span>
-                  <span className="text-muted-foreground">{triad.notes}</span>
-                </div>
-              ))}
-            </pre>
+        <div className="bg-muted/30 rounded-md p-4">
+          <h3 className="font-medium mb-2">常用和弦 / Common Chords</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
+            {commonTriads.map((triad, index) => (
+              <div key={index} className="flex gap-3">
+                <span className="font-medium w-8">{triad.degree}</span>
+                <span className="w-12">{triad.chord}</span>
+                <span className="text-muted-foreground">{triad.notes}</span>
+              </div>
+            ))}
           </div>
         </div>
       </div>

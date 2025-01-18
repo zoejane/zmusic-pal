@@ -11,10 +11,10 @@ interface CardWrapperProps {
 export function CardWrapper({ title, children, className }: CardWrapperProps) {
   return (
     <Card className={cn("bg-card text-card-foreground shadow-sm", className)}>
-      <CardHeader className="bg-muted/50 p-4">
-        <CardTitle className="text-primary text-lg font-medium">{title}</CardTitle>
+      <CardHeader className="bg-muted/50 p-3 sm:p-4">
+        <CardTitle className="text-primary text-base sm:text-lg font-medium">{title}</CardTitle>
       </CardHeader>
-      <CardContent className="p-4">{children}</CardContent>
+      <CardContent className="p-3 sm:p-4">{children}</CardContent>
     </Card>
   )
 }
