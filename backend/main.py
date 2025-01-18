@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 import httpx
 import os
@@ -9,28 +10,23 @@ load_dotenv()
 
 app = FastAPI()
 
-# 配置 CORS
-origins = [
-    "http://localhost:3000",
-    "https://zmusic-pal.vercel.app",
-    "https://zmusic-pal-web.vercel.app",
-]
+@app.options("/api/chat")
+async def options_chat():
+    return JSONResponse(
+        content={},
+        headers={
+            "Access-Control-Allow-Origin": "https://zmusic-pal-web.vercel.app",
+            "Access-Control-Allow-Methods": "POST, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type",
+        },
+    )
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=False,
-    allow_methods=["GET", "POST", "OPTIONS"],
-    allow_headers=[
-        "Content-Type",
-        "Authorization",
-        "Accept",
-        "Origin",
-        "X-Requested-With",
-    ],
-    expose_headers=["*"],
-    max_age=86400,  # 预检请求的缓存时间（24小时）
-)
+@app.post("/api/chat", response_model=ChatResponse)
+async def chat(message: ChatMessage):
+    """处理聊天请求"""
+    response = JSONResponse(content={"response": await get_ai_response(message.content)})
+    response.headers["Access-Control-Allow-Origin"] = "https://zmusic-pal-web.vercel.app"
+    return response
 
 class ChatMessage(BaseModel):
     content: str
@@ -73,14 +69,5 @@ async def get_ai_response(message: str) -> str:
             response = await client.post(DEEPSEEK_API_URL, json=data, headers=headers)
             response.raise_for_status()
             return response.json()["choices"][0]["message"]["content"]
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-@app.post("/api/chat", response_model=ChatResponse)
-async def chat(message: ChatMessage):
-    """处理聊天请求"""
-    try:
-        response = await get_ai_response(message.content)
-        return ChatResponse(response=response)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e)) 
