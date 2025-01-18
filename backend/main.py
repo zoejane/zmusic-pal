@@ -39,7 +39,7 @@ async def get_ai_response(message: str) -> str:
         "messages": [
             {
                 "role": "system",
-                "content": """你是一个专业的音乐助手，精通音乐理论和作曲。你会：
+                "content": """你扮演音乐伙伴的角色，精通音乐理论和作曲。你会：
                 1. 用简洁专业的语言回答问题
                 2. 给出具体的建议和例子
                 3. 涉及和弦时会同时给出和弦符号和具体音符

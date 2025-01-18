@@ -44,7 +44,7 @@ export default function AIPal() {
     <CardWrapper title="AI 伙伴 / AI Pal">
       <div className="space-y-4">
         <Textarea
-          placeholder={`让我们聊聊音乐吧！/ Let's talk about music!\n(按回车发送，Shift + 回车换行。\nPress Enter to send, Shift + Enter for new line.)`}
+          placeholder="让我们聊聊音乐吧。/ Let's talk about music."
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
