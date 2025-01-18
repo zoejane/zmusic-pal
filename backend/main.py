@@ -1,5 +1,6 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.base import BaseHTTPMiddleware
 from pydantic import BaseModel
 import httpx
 import os
@@ -9,14 +10,15 @@ load_dotenv()
 
 app = FastAPI()
 
-# 配置 CORS
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # 允许所有来源访问
-    allow_credentials=False,  # 当允许所有来源时，不能设置为 True
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+class CORSMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        response = await call_next(request)
+        response.headers["Access-Control-Allow-Origin"] = "*"
+        response.headers["Access-Control-Allow-Methods"] = "*"
+        response.headers["Access-Control-Allow-Headers"] = "*"
+        return response
+
+app.add_middleware(CORSMiddleware)
 
 class ChatMessage(BaseModel):
     content: str
