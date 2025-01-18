@@ -4,17 +4,19 @@ import AIPal from '@/components/AIPal'
 
 export default function Home() {
   return (
-    <main className="min-h-screen p-2 sm:p-4 md:p-8 bg-background text-foreground">
-      <div className="max-w-full mx-auto space-y-4 lg:flex lg:space-y-0 lg:space-x-4 lg:items-start">
-        <div className="lg:w-7/12 xl:w-8/12 space-y-4">
+    <div className="container mx-auto py-4">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="md:col-span-1 lg:col-span-2 space-y-4">
           <KeyFinder />
           <ChordFinder />
         </div>
-        <div className="lg:w-5/12 xl:w-4/12 lg:sticky lg:top-4">
-          <AIPal />
+        <div className="md:col-span-1">
+          <div className="sticky top-20">
+            <AIPal />
+          </div>
         </div>
       </div>
-    </main>
+    </div>
   )
 }
 
