@@ -72,18 +72,16 @@ export default function AIPal() {
         >
           {isLoading ? '思考中...' : '发送'}
         </Button>
-        <div>
-          {error && (
-            <div className="p-3 bg-destructive/10 text-destructive rounded-md text-sm">
-              {error}
-            </div>
-          )}
-          {!error && response && (
-            <div className="mt-4 p-3 bg-muted/30 rounded-md whitespace-pre-wrap">
-              {response}
-            </div>
-          )}
-        </div>
+        {error ? (
+          <div className="p-3 bg-destructive/10 text-destructive rounded-md text-sm">
+            {error}
+          </div>
+        ) : null}
+        {response ? (
+          <div className="mt-4 p-3 bg-muted/30 rounded-md whitespace-pre-wrap">
+            {response}
+          </div>
+        ) : null}
       </div>
     </CardWrapper>
   )
