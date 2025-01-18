@@ -17,10 +17,14 @@ export default function AIPal() {
 
     setIsLoading(true)
     setError('')
+    setResponse('')
     
     try {
+      console.log('Sending message:', input)
       const aiResponse = await sendMessage(input)
+      console.log('Received response:', aiResponse)
       setResponse(aiResponse)
+      setInput('')
     } catch (error) {
       console.error('Error:', error)
       if ((error as any)?.message?.includes('Network')) {
