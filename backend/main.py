@@ -38,17 +38,11 @@ async def chat(message: ChatMessage):
     try:
         logger.info(f"收到聊天请求: {message.content}")
         response_text = await get_ai_response(message.content)
-        response = JSONResponse(content={"response": response_text})
-        response.headers["Access-Control-Allow-Origin"] = "https://zmusic-pal-web.vercel.app"
-        return response
+        logger.info(f"返回响应: {response_text}")
+        return ChatResponse(response=response_text)
     except Exception as e:
         logger.error(f"处理聊天请求时出错: {str(e)}")
-        error_response = JSONResponse(
-            status_code=500,
-            content={"detail": str(e)}
-        )
-        error_response.headers["Access-Control-Allow-Origin"] = "https://zmusic-pal-web.vercel.app"
-        return error_response
+        raise HTTPException(status_code=500, detail=str(e))
 
 DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
 DEEPSEEK_API_URL = "https://api.deepseek.com/v1/chat/completions"
