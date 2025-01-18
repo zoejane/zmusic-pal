@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, KeyboardEvent } from 'react'
+import { useState, KeyboardEvent, useEffect } from 'react'
 import { CardWrapper } from './ui/card-wrapper'
 import { Button } from './ui/button'
 import { Textarea } from './ui/textarea'
@@ -24,16 +24,16 @@ export default function AIPal() {
       const aiResponse = await sendMessage(input)
       console.log('Received response:', aiResponse)
       setInput('')
-      setIsLoading(false)
       setResponse(aiResponse)
     } catch (error) {
       console.error('Error:', error)
-      setIsLoading(false)
       if ((error as any)?.message?.includes('Network')) {
         setError('抱歉，AI 伙伴暂时无法连接。请确保后端服务已启动，或稍后再试。')
       } else {
         setError('抱歉，AI 伙伴遇到了一些问题。请稍后再试，或联系管理员获取帮助。')
       }
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -61,11 +61,12 @@ export default function AIPal() {
         >
           {isLoading ? '思考中...' : '发送'}
         </Button>
-        {error ? (
+        {error && (
           <div className="p-3 bg-destructive/10 text-destructive rounded-md text-sm">
             {error}
           </div>
-        ) : response && (
+        )}
+        {!error && response && (
           <div className="mt-4 p-3 bg-muted/30 rounded-md whitespace-pre-wrap">
             {response}
           </div>
