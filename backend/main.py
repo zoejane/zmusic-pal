@@ -37,6 +37,14 @@ class ChatMessage(BaseModel):
 class ChatResponse(BaseModel):
     response: str
 
+@app.options("/api/chat")
+async def options_chat():
+    """处理 OPTIONS 请求"""
+    return JSONResponse(
+        status_code=200,
+        content={"message": "OK"}
+    )
+
 @app.post("/api/chat")
 async def chat(message: ChatMessage):
     """处理聊天请求"""
