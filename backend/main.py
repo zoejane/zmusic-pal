@@ -16,6 +16,16 @@ load_dotenv()
 
 app = FastAPI()
 
+@app.middleware("http")
+async def handle_options(request: Request, call_next):
+    if request.method == "OPTIONS":
+        return JSONResponse(
+            status_code=200,
+            content={"message": "OK"}
+        )
+    response = await call_next(request)
+    return response
+
 # 配置 CORS
 origins = [
     "http://localhost:3000",
