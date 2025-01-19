@@ -16,21 +16,21 @@ load_dotenv()
 app = FastAPI()
 
 # 配置 CORS
+origins = [
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "https://zmusic-pal-web.vercel.app",
+    "https://zmusic-pal.zeabur.app",
+    "https://v0.dev",
+    "https://*.v0.dev"
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "http://localhost:3001",
-        "https://zmusic-pal-web.vercel.app",
-        "https://zmusic-pal.zeabur.app",
-        "https://v0.dev",
-        "https://*.v0.dev"
-    ],
+    allow_origins=origins,
     allow_credentials=False,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_methods=["*"],
     allow_headers=["*"],
-    expose_headers=["*"],
-    max_age=3600,
 )
 
 class ChatMessage(BaseModel):
@@ -39,9 +39,9 @@ class ChatMessage(BaseModel):
 class ChatResponse(BaseModel):
     response: str
 
-@app.options("/api/chat")
-async def options_chat():
-    """处理 OPTIONS 请求"""
+@app.options("/{full_path:path}")
+async def options_route(full_path: str):
+    """处理所有路径的 OPTIONS 请求"""
     return JSONResponse(
         status_code=200,
         content={"message": "OK"}
