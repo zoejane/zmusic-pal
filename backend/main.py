@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.routing import APIRoute
 from pydantic import BaseModel
 import httpx
 import os
@@ -33,19 +34,29 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# 自定义路由类来处理 OPTIONS 请求
+class CustomAPIRoute(APIRoute):
+    def get_route_handler(self):
+        original_route_handler = super().get_route_handler()
+        
+        async def custom_route_handler(request: Request):
+            if request.method == "OPTIONS":
+                return JSONResponse(
+                    status_code=200,
+                    content={"message": "OK"}
+                )
+            return await original_route_handler(request)
+            
+        return custom_route_handler
+
+# 使用自定义路由类
+app.router.route_class = CustomAPIRoute
+
 class ChatMessage(BaseModel):
     content: str
 
 class ChatResponse(BaseModel):
     response: str
-
-@app.options("/{full_path:path}")
-async def options_route(full_path: str):
-    """处理所有路径的 OPTIONS 请求"""
-    return JSONResponse(
-        status_code=200,
-        content={"message": "OK"}
-    )
 
 @app.post("/api/chat")
 async def chat(message: ChatMessage):
