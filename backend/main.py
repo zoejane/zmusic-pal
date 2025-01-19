@@ -27,8 +27,10 @@ app.add_middleware(
         "https://*.v0.dev"
     ],
     allow_credentials=False,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
+    expose_headers=["*"],
+    max_age=3600,
 )
 
 class ChatMessage(BaseModel):
