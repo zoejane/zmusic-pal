@@ -22,7 +22,9 @@ app.add_middleware(
         "http://localhost:3000",
         "http://localhost:3001",
         "https://zmusic-pal-web.vercel.app",
-        "https://zmusic-pal.zeabur.app"
+        "https://zmusic-pal.zeabur.app",
+        "https://v0.dev",
+        "https://*.v0.dev"
     ],
     allow_credentials=False,
     allow_methods=["*"],
