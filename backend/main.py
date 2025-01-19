@@ -27,18 +27,9 @@ async def handle_options(request: Request, call_next):
     return response
 
 # 配置 CORS
-origins = [
-    "http://localhost:3000",
-    "http://localhost:3001",
-    "https://zmusic-pal-web.vercel.app",
-    "https://zmusic-pal.zeabur.app",
-    "https://v0.dev",
-    "https://*.v0.dev"
-]
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],  # 允许所有源
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
