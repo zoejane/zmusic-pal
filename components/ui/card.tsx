@@ -27,4 +27,5 @@ export function CardTitle({ className, ...props }: CardProps) {
 
 export function CardContent({ className, ...props }: CardProps) {
   return <div className={cn("p-6 pt-0", className)} {...props} />
-} 
+}
+

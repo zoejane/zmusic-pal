@@ -1,7 +1,7 @@
 'use client'
 
 import { ThemeToggle } from '@/components/ThemeToggle'
-import { Github } from 'lucide-react'
+import { GithubIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Header from '@/components/Header'
 import { AboutMeModal } from '@/components/AboutMeModal'
@@ -21,10 +21,10 @@ export default function RootLayoutClient({
             <Button
               variant="ghost"
               size="icon"
-              className="h-10 w-10"
+              className="h-8 w-8"
               onClick={() => window.open('https://github.com/zoejane/zmusic-pal', '_blank')}
             >
-              <Github className="h-6 w-6" />
+              <GithubIcon className="h-4 w-4" />
               <span className="sr-only">GitHub</span>
             </Button>
             <ThemeToggle className="h-10 w-10" iconSize={20} />
@@ -36,4 +36,5 @@ export default function RootLayoutClient({
       </main>
     </div>
   )
-} 
+}
+
