@@ -6,6 +6,7 @@ import { Button } from "./ui/button"
 import { Textarea } from "./ui/textarea"
 import { sendMessage } from "@/lib/api"
 import { Send } from "lucide-react"
+import ReactMarkdown from "react-markdown"
 
 interface Message {
   type: "user" | "ai"
@@ -89,7 +90,21 @@ export default function AIPal() {
                   message.type === "user" ? "bg-primary text-primary-foreground" : "bg-muted"
                 }`}
               >
-                {message.content}
+                {message.type === "user" ? (
+                  message.content
+                ) : (
+                  <ReactMarkdown
+                    className="prose prose-sm dark:prose-invert max-w-none"
+                    components={{
+                      // 自定义链接在新标签页打开
+                      a: ({ node, ...props }) => (
+                        <a target="_blank" rel="noopener noreferrer" {...props} />
+                      ),
+                    }}
+                  >
+                    {message.content}
+                  </ReactMarkdown>
+                )}
               </div>
             </div>
           ))}
