@@ -1,101 +1,131 @@
-'use client'
+"use client"
 
-import { useState, KeyboardEvent, useEffect } from 'react'
-import { CardWrapper } from './ui/card-wrapper'
-import { Button } from './ui/button'
-import { Textarea } from './ui/textarea'
-import { sendMessage } from '@/lib/api'
+import { useState, useEffect, useRef, type KeyboardEvent } from "react"
+import { CardWrapper } from "./ui/card-wrapper"
+import { Button } from "./ui/button"
+import { Textarea } from "./ui/textarea"
+import { sendMessage } from "@/lib/api"
+import { Send } from "lucide-react"
+
+interface Message {
+  type: "user" | "ai"
+  content: string
+}
 
 export default function AIPal() {
-  const [input, setInput] = useState('')
-  const [response, setResponse] = useState('')
+  const [input, setInput] = useState("")
+  const [messages, setMessages] = useState<Message[]>([])
   const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState('')
+  const [error, setError] = useState("")
+  const inputRef = useRef<HTMLTextAreaElement>(null)
+  const chatContainerRef = useRef<HTMLDivElement>(null)
+  const inputAreaRef = useRef<HTMLDivElement>(null)
 
   const handleSubmit = async () => {
     if (!input.trim() || isLoading) return
-
-    console.log('Starting submission...')
     setIsLoading(true)
-    setError('')
-    setResponse('')
-    
+    setError("")
+    const newUserMessage = { type: "user" as const, content: input }
+    setMessages((prev) => [...prev, newUserMessage])
+    setInput("")
+
     try {
-      console.log('Sending message:', input)
       const aiResponse = await sendMessage(input)
-      console.log('Received response:', aiResponse)
-      console.log('Setting response state...')
-      setResponse(aiResponse)
-      console.log('Response state set')
-      setInput('')
+      const newAiMessage = { type: "ai" as const, content: aiResponse }
+      setMessages((prev) => [...prev, newAiMessage])
     } catch (error) {
-      console.error('Error:', error)
-      if ((error as any)?.message?.includes('Network')) {
-        setError('抱歉，AI 伙伴暂时无法连接。请确保后端服务已启动，或稍后再试。')
-      } else {
-        setError('抱歉，AI 伙伴遇到了一些问题。请稍后再试，或联系管理员获取帮助。')
-      }
+      console.error("Error in handleSubmit:", error)
+      setError(error instanceof Error ? error.message : "An unexpected error occurred")
     } finally {
-      console.log('Setting loading state to false...')
       setIsLoading(false)
-      console.log('Loading state set to false')
     }
   }
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault()
       handleSubmit()
     }
   }
 
   useEffect(() => {
-    console.log('Current response state:', response)
-    console.log('Current error state:', error)
-    console.log('Current loading state:', isLoading)
-  }, [response, error, isLoading])
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight
+    }
+  }, [messages])
 
-  console.log('Rendering with states:', { response, error, isLoading })
+  useEffect(() => {
+    const resizeTextarea = () => {
+      if (inputRef.current) {
+        inputRef.current.style.height = "auto"
+        inputRef.current.style.height = `${inputRef.current.scrollHeight}px`
+      }
+    }
+    resizeTextarea()
+    window.addEventListener("resize", resizeTextarea)
+    return () => window.removeEventListener("resize", resizeTextarea)
+  }, [input])
 
-  const shouldShowResponse = !error && response
-  console.log('Should show response:', shouldShowResponse)
-  console.log('Response content:', response)
+  useEffect(() => {
+    if (messages.length > 0 && inputAreaRef.current) {
+      inputAreaRef.current.scrollIntoView({ behavior: "smooth" })
+    }
+  }, [messages])
 
   return (
-    <CardWrapper title="AI 伙伴 / AI Pal">
-      <div className="flex flex-col gap-4">
-        {(response || error || isLoading) && (
-          <div className="flex flex-col gap-4 min-h-[100px] border-2 border-primary p-4 rounded-md bg-muted/10">
-            {error ? (
-              <div className="p-3 bg-destructive/10 text-destructive rounded-md text-sm">
-                {error}
-              </div>
-            ) : null}
-            {shouldShowResponse ? (
-              <div className="p-3 bg-background rounded-md whitespace-pre-wrap border border-muted">
-                {response}
-              </div>
-            ) : isLoading ? (
-              <div className="text-muted-foreground text-sm italic">
-                思考中...
-              </div>
-            ) : null}
-          </div>
-        )}
-        <Textarea
-          placeholder="让我们聊聊音乐吧。/ Let's talk about music."
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={handleKeyDown}
-          className="min-h-[100px]"
-        />
-        <Button 
-          onClick={handleSubmit} 
-          disabled={isLoading}
-          className="w-full"
+    <CardWrapper
+      title="AI 伙伴 / AI Pal"
+      className={`flex flex-col ${messages.length === 0 ? "h-auto" : "h-[400px] sm:h-[450px] md:h-[500px]"}`}
+    >
+      {messages.length > 0 && (
+        <div
+          className="flex-grow overflow-y-auto mb-2 p-4 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100"
+          ref={chatContainerRef}
         >
-          {isLoading ? '思考中...' : '发送'}
-        </Button>
+          {messages.map((message, index) => (
+            <div key={index} className={`mb-2 ${message.type === "user" ? "text-right" : "text-left"}`}>
+              <div
+                className={`inline-block p-2 rounded-lg max-w-[80%] ${
+                  message.type === "user" ? "bg-primary text-primary-foreground" : "bg-muted"
+                }`}
+              >
+                {message.content}
+              </div>
+            </div>
+          ))}
+          {isLoading && (
+            <div className="text-left mb-4">
+              <div className="inline-block p-2 rounded-lg bg-muted animate-pulse">思考中...</div>
+            </div>
+          )}
+          {error && (
+            <div className="text-left mb-4">
+              <div className="inline-block p-2 rounded-lg bg-destructive/10 text-destructive">错误: {error}</div>
+            </div>
+          )}
+        </div>
+      )}
+      <div ref={inputAreaRef} className={`p-2 ${messages.length > 0 ? "border-t" : ""} mt-auto`}>
+        <div className="relative">
+          <Textarea
+            ref={inputRef}
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder="输入问题 / Ask a question"
+            className="pr-10 resize-none overflow-hidden"
+            rows={1}
+          />
+          <Button
+            onClick={handleSubmit}
+            disabled={isLoading || !input.trim()}
+            className="absolute right-2 top-1/2 transform -translate-y-1/2"
+            size="sm"
+          >
+            <Send className="h-4 w-4" />
+            <span className="sr-only">发送</span>
+          </Button>
+        </div>
       </div>
     </CardWrapper>
   )

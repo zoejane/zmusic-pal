@@ -1,6 +1,6 @@
 import { KeyFinder } from "@/components/KeyFinder"
 import { ChordFinder } from "@/components/ChordFinder"
-import { AIPal } from "@/components/AIPal"
+import AIPal from "@/components/AIPal"
 
 export default function Home() {
   return (

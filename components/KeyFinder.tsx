@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, Fragment } from "react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { CardWrapper } from "@/components/ui/card-wrapper"
 
@@ -124,11 +124,11 @@ export function KeyFinder() {
           <h3 className="font-medium mb-1 text-sm text-center">常用和弦 / Common Chords</h3>
           <div className="grid grid-cols-[0.5fr_1fr_1.5fr] gap-x-2 gap-y-1 text-sm">
             {commonTriads.map((triad, index) => (
-              <React.Fragment key={index}>
+              <Fragment key={index}>
                 <span className="font-medium text-right">{triad.degree}</span>
                 <span className="font-medium text-left">{triad.chord}</span>
                 <span className="text-muted-foreground text-left">{triad.notes}</span>
-              </React.Fragment>
+              </Fragment>
             ))}
           </div>
         </div>
