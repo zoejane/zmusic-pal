@@ -20,7 +20,7 @@ export default function RootLayoutClient({
               variant="ghost"
               size="icon"
               className="h-8 w-8"
-              onClick={() => window.open("https://zoejane.net", "_blank")}
+              onClick={() => window.open("https://www.zoejane.net", "_blank")}
             >
               <User className="h-4 w-4" />
               <span className="sr-only">About Me</span>
