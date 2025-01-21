@@ -12,7 +12,7 @@ export function CardWrapper({ title, children, className }: CardWrapperProps) {
   return (
     <Card className={cn("bg-card text-card-foreground shadow-sm", className)}>
       <CardHeader className="bg-muted/50 p-2 text-center">
-        <CardTitle className="text-primary text-sm font-medium">{title}</CardTitle>
+        <CardTitle className="text-primary text-sm font-medium lg:text-lg">{title}</CardTitle>
       </CardHeader>
       <CardContent className="p-2 flex flex-col items-center">{children}</CardContent>
     </Card>

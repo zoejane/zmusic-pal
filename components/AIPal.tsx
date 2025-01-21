@@ -76,7 +76,7 @@ export default function AIPal() {
   return (
     <CardWrapper
       title="AI 伙伴 / AI Pal"
-      className={`flex flex-col ${messages.length === 0 ? "h-auto" : "h-[400px] sm:h-[450px] md:h-[500px]"}`}
+      className={`flex flex-col ${messages.length === 0 ? "h-auto" : "h-[400px] sm:h-[450px] md:h-[500px]"} w-full`}
     >
       {messages.length > 0 && (
         <div
@@ -97,9 +97,7 @@ export default function AIPal() {
                     className="prose prose-sm dark:prose-invert max-w-none"
                     components={{
                       // 自定义链接在新标签页打开
-                      a: ({ node, ...props }) => (
-                        <a target="_blank" rel="noopener noreferrer" {...props} />
-                      ),
+                      a: ({ node, ...props }) => <a target="_blank" rel="noopener noreferrer" {...props} />,
                     }}
                   >
                     {message.content}
@@ -127,14 +125,14 @@ export default function AIPal() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="输入问题 / Ask a question"
-            className="pr-10 resize-none overflow-hidden"
+            placeholder="让我们聊聊音乐。 / Let's talk about music."
+            className="pr-12 resize-none overflow-hidden w-full"
             rows={1}
           />
           <Button
             onClick={handleSubmit}
             disabled={isLoading || !input.trim()}
-            className="absolute right-2 top-1/2 transform -translate-y-1/2"
+            className="absolute right-3 top-1/2 transform -translate-y-1/2"
             size="sm"
           >
             <Send className="h-4 w-4" />
