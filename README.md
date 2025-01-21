@@ -3,6 +3,9 @@
 A lightweight and elegant web application for quick key and chord lookup, featuring an AI companion for deeper musical exploration.  
 一个小巧优雅的 Web 应用，用于快速查找调性和和弦，同时配备 AI 伙伴，提供更深入的音乐陪伴。
 
+[zMusic-Pal](https://zmusic-pal.zoejane.net)  
+
+
 ## Core Features | 核心功能
 
 ### 1. Key Finder | 查调
