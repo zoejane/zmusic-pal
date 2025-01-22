@@ -41,8 +41,8 @@ Access and use on mobile devices for music exploration anytime, anywhere.
 
 ## Quick Start | 快速开始
 
-### Online Demo | 在线体验
-Visit directly: [zMusic-Pal Demo](https://zmusic-pal.zoejane.net)  
+### Website | 在线体验
+Visit directly: [zMusic-Pal](https://zmusic-pal.zoejane.net)  
 直接访问：[zMusic-Pal 在线体验](https://zmusic-pal.zoejane.net)
 
 ### Local Development | 本地运行（可选）
