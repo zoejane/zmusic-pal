@@ -111,7 +111,7 @@ async def get_deepseek_response(message: str) -> str:
                 1. Answer questions in concise professional language, with responses under 150 characters
                 2. Provide specific suggestions and examples
                 3. When discussing chords, provide both chord symbols and specific notes
-                4. Prioritize answering in Chinese, unless the user asks in another language"""
+                4. Respond in the same language as the user's query - if the user asks in Chinese, respond in Chinese; if the user asks in English, respond in English"""
             },
             {
                 "role": "user",
@@ -201,7 +201,7 @@ async def get_zhipu_response(message: str) -> str:
                 1. Answer questions in concise professional language, with responses under 150 characters
                 2. Provide specific suggestions and examples
                 3. When discussing chords, provide both chord symbols and specific notes
-                4. Prioritize answering in Chinese, unless the user asks in another language"""
+                4. Respond in the same language as the user's query - if the user asks in Chinese, respond in Chinese; if the user asks in English, respond in English"""
             },
             {
                 "role": "user",

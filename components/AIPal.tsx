@@ -96,7 +96,7 @@ export default function AIPal() {
                   <ReactMarkdown
                     className="prose prose-sm dark:prose-invert max-w-none"
                     components={{
-                      // 自定义链接在新标签页打开
+                      // Open links in new tab
                       a: ({ node, ...props }) => <a target="_blank" rel="noopener noreferrer" {...props} />,
                     }}
                   >
@@ -108,12 +108,12 @@ export default function AIPal() {
           ))}
           {isLoading && (
             <div className="text-left mb-4">
-              <div className="inline-block p-2 rounded-lg bg-muted animate-pulse">思考中...</div>
+              <div className="inline-block p-2 rounded-lg bg-muted animate-pulse">Thinking... | 思考中...</div>
             </div>
           )}
           {error && (
             <div className="text-left mb-4">
-              <div className="inline-block p-2 rounded-lg bg-destructive/10 text-destructive">错误: {error}</div>
+              <div className="inline-block p-2 rounded-lg bg-destructive/10 text-destructive">Error: | 错误: {error}</div>
             </div>
           )}
         </div>
@@ -136,7 +136,7 @@ export default function AIPal() {
             size="sm"
           >
             <Send className="h-4 w-4" />
-            <span className="sr-only">发送</span>
+            <span className="sr-only">Send</span>
           </Button>
         </div>
       </div>
