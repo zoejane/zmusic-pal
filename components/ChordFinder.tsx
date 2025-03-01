@@ -13,7 +13,7 @@ const chordTypes = [
   { value: "aug", label: "Aug | 增三和弦" },
 ]
 
-// 音符序列（包含重复的升降号形式，用于计算）
+// Note sequence (including repeated sharp/flat forms, for calculation)
 const noteSequence = {
   sharp: [
     "C",
@@ -69,7 +69,7 @@ const noteSequence = {
   ],
 }
 
-// 特殊情况的音符映射（包含注释）
+// Special note mappings with comments
 const specialNoteMap = {
   "E aug 3": "B#（C）", // E augmented: E - G# - B# -> C
   "F# aug 3": "C##（D）", // F# augmented: F# - A# - C## -> D
@@ -86,23 +86,23 @@ function getChordNotes(rootNote: string, chordType: string): string[] {
   let intervals: number[]
   switch (chordType) {
     case "major":
-      intervals = [0, 4, 7] // 大三度(4)和纯五度(7)
+      intervals = [0, 4, 7] // Major third (4) and perfect fifth (7)
       break
     case "minor":
-      intervals = [0, 3, 7] // 小三度(3)和纯五度(7)
+      intervals = [0, 3, 7] // Minor third (3) and perfect fifth (7)
       break
     case "dim":
-      intervals = [0, 3, 6] // 小三度(3)和减五度(6)
+      intervals = [0, 3, 6] // Minor third (3) and diminished fifth (6)
       break
     case "aug":
-      intervals = [0, 4, 8] // 大三度(4)和增五度(8)
+      intervals = [0, 4, 8] // Major third (4) and augmented fifth (8)
       break
     default:
       return []
   }
 
   return intervals.map((interval, index) => {
-    // 检查是否有特殊情况需要处理
+    // Check if there's a special case to handle
     const specialKey = `${rootNote} ${chordType} ${index + 1}`
     if (specialNoteMap[specialKey as keyof typeof specialNoteMap]) {
       return specialNoteMap[specialKey as keyof typeof specialNoteMap]

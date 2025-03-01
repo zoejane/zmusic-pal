@@ -49,7 +49,7 @@ export default function RootLayout({
           `}
         </Script>
 
-        {/* 百度链接自动提交 */}
+        {/* Baidu Link Auto-Submit */}
         <Script id="baidu-push" strategy="afterInteractive">
           {`
             (function(){
