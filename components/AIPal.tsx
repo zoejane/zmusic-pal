@@ -75,7 +75,7 @@ export default function AIPal() {
 
   return (
     <CardWrapper
-      title="AI 伙伴 / AI Pal"
+      title="AI Pal | AI 伙伴"
       className={`flex flex-col ${messages.length === 0 ? "h-auto" : "h-[400px] sm:h-[450px] md:h-[500px]"} w-full`}
     >
       {messages.length > 0 && (
@@ -125,7 +125,7 @@ export default function AIPal() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="让我们聊聊音乐。 / Let's talk about music."
+            placeholder="Ask me music questions | 问我音乐问题吧"
             className="pr-12 resize-none overflow-hidden w-full"
             rows={1}
           />

@@ -7,7 +7,7 @@ import { CardWrapper } from "@/components/ui/card-wrapper"
 const rootNotes = ["C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"]
 const sharpNotes = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
 const flatNotes = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"]
-const scales = ["大调 / Major", "自然小调 / Natural Minor", "和声小调 / Harmonic Minor", "旋律小调 / Melodic Minor"]
+const scales = ["Major | 大调", "Natural Minor | 自然小调", "Harmonic Minor | 和声小调", "Melodic Minor | 旋律小调"]
 
 const scalePatterns = {
   Major: [0, 2, 4, 5, 7, 9, 11],
@@ -26,7 +26,7 @@ function getProperNoteName(index: number, rootNote: string): string {
 }
 
 function generateScale(rootNote: string, scaleType: string): string[] | { ascending: string[]; descending: string[] } {
-  const pattern = scalePatterns[scaleType.split(" / ")[1] as keyof typeof scalePatterns]
+  const pattern = scalePatterns[scaleType.split(" | ")[0] as keyof typeof scalePatterns]
   let rootIndex = flatNotes.indexOf(rootNote)
   if (rootIndex === -1) rootIndex = sharpNotes.indexOf(rootNote)
 
@@ -75,18 +75,18 @@ function generateTriads(
 
 export function KeyFinder() {
   const [rootNote, setRootNote] = useState("C")
-  const [scale, setScale] = useState("大调 / Major")
+  const [scale, setScale] = useState("Major | 大调")
 
   const scaleNotes = useMemo(() => generateScale(rootNote, scale), [rootNote, scale])
   const commonTriads = useMemo(() => generateTriads(scaleNotes, scale), [scaleNotes, scale])
 
   return (
-    <CardWrapper title="查调 / Key Finder" className="text-sm sm:text-base">
+    <CardWrapper title="Key Finder | 查调" className="text-sm sm:text-base">
       <div className="space-y-1">
         <div className="grid grid-cols-2 gap-0.5">
           <Select value={rootNote} onValueChange={setRootNote}>
             <SelectTrigger className="h-8">
-              <SelectValue placeholder="选择音名" />
+              <SelectValue placeholder="Root Note | 选择音名" />
             </SelectTrigger>
             <SelectContent>
               {rootNotes.map((note) => (
@@ -98,7 +98,7 @@ export function KeyFinder() {
           </Select>
           <Select value={scale} onValueChange={setScale}>
             <SelectTrigger className="h-8">
-              <SelectValue placeholder="选择调式" />
+              <SelectValue placeholder="Scale Type | 选择调式" />
             </SelectTrigger>
             <SelectContent>
               {scales.map((s) => (
@@ -110,18 +110,18 @@ export function KeyFinder() {
           </Select>
         </div>
         <div className="bg-muted/30 rounded-md p-1 text-center">
-          <h3 className="font-medium mb-1 text-sm">音阶 / Scale</h3>
+          <h3 className="font-medium mb-1 text-sm">Scale | 音阶</h3>
           {scale.includes("Melodic Minor") ? (
             <>
-              <p className="text-sm mb-0.5">上行: {(scaleNotes as { ascending: string[] }).ascending.join(" ")}</p>
-              <p className="text-sm">下行: {(scaleNotes as { descending: string[] }).descending.join(" ")}</p>
+              <p className="text-sm mb-0.5">Ascending | 上行: {(scaleNotes as { ascending: string[] }).ascending.join(" ")}</p>
+              <p className="text-sm">Descending | 下行: {(scaleNotes as { descending: string[] }).descending.join(" ")}</p>
             </>
           ) : (
             <p className="text-sm font-medium">{(scaleNotes as string[]).join(" ")}</p>
           )}
         </div>
         <div className="bg-muted/30 rounded-md p-1">
-          <h3 className="font-medium mb-1 text-sm text-center">常用和弦 / Common Chords</h3>
+          <h3 className="font-medium mb-1 text-sm text-center">Common Chords | 常用和弦</h3>
           <div className="grid grid-cols-[0.5fr_1fr_1.5fr] gap-x-2 gap-y-1 text-sm">
             {commonTriads.map((triad, index) => (
               <Fragment key={index}>

@@ -7,10 +7,10 @@ import { CardWrapper } from "@/components/ui/card-wrapper"
 const rootNotes = ["C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"]
 
 const chordTypes = [
-  { value: "major", label: "大三和弦 / Major" },
-  { value: "minor", label: "小三和弦 / Minor" },
-  { value: "dim", label: "减三和弦 / Dim" },
-  { value: "aug", label: "增三和弦 / Aug" },
+  { value: "major", label: "Major | 大三和弦" },
+  { value: "minor", label: "Minor | 小三和弦" },
+  { value: "dim", label: "Dim | 减三和弦" },
+  { value: "aug", label: "Aug | 增三和弦" },
 ]
 
 // 音符序列（包含重复的升降号形式，用于计算）
@@ -120,12 +120,12 @@ export function ChordFinder() {
   }, [rootNote, chordType])
 
   return (
-    <CardWrapper title="查和弦 / Chord Finder" className="text-sm">
+    <CardWrapper title="Chord Finder | 查和弦" className="text-sm">
       <div className="space-y-1">
         <div className="grid grid-cols-2 gap-0.5">
           <Select value={rootNote} onValueChange={setRootNote}>
             <SelectTrigger className="h-8">
-              <SelectValue placeholder="选择根音" />
+              <SelectValue placeholder="Root Note | 选择根音" />
             </SelectTrigger>
             <SelectContent>
               {rootNotes.map((note) => (
@@ -137,7 +137,7 @@ export function ChordFinder() {
           </Select>
           <Select value={chordType} onValueChange={setChordType}>
             <SelectTrigger className="h-8">
-              <SelectValue placeholder="选择和弦类型" />
+              <SelectValue placeholder="Chord Type | 选择和弦类型" />
             </SelectTrigger>
             <SelectContent>
               {chordTypes.map(({ value, label }) => (
@@ -150,7 +150,7 @@ export function ChordFinder() {
         </div>
         <div className="bg-muted/30 rounded-md p-1 text-center">
           <p className="text-sm">
-            组成音：<span className="text-foreground font-medium">{chordNotes.join(" - ")}</span>
+            Notes | 组成音：<span className="text-foreground font-medium">{chordNotes.join(" - ")}</span>
           </p>
         </div>
       </div>
