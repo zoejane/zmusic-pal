@@ -10,7 +10,14 @@ import json
 from dotenv import load_dotenv
 import asyncio
 
-# 配置日志
+# =====================================================
+# Configuration Area - Modify API Provider here
+# "deepseek" - Use Deepseek API
+# "zhipu" - Use Zhipu API
+API_PROVIDER = "deepseek"
+# =====================================================
+
+# Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -28,16 +35,16 @@ async def handle_options(request: Request, call_next):
     response = await call_next(request)
     return response
 
-# 配置 CORS
+# Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # 允许所有源
+    allow_origins=["*"],  # Allow all origins
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# 自定义路由类来处理 OPTIONS 请求
+# Custom route class to handle OPTIONS requests
 class CustomAPIRoute(APIRoute):
     def get_route_handler(self):
         original_route_handler = super().get_route_handler()
@@ -52,7 +59,7 @@ class CustomAPIRoute(APIRoute):
             
         return custom_route_handler
 
-# 使用自定义路由类
+# Use custom route class
 app.router.route_class = CustomAPIRoute
 
 class ChatMessage(BaseModel):
@@ -63,31 +70,31 @@ class ChatResponse(BaseModel):
 
 @app.post("/api/chat")
 async def chat(message: ChatMessage):
-    """处理聊天请求"""
+    """Handle chat requests"""
     try:
-        logger.info(f"收到聊天请求: {message.content}")
-        # 根据环境变量选择使用哪个 API
-        api_provider = os.getenv("API_PROVIDER", "deepseek").lower()
-        logger.info(f"当前使用的 API 提供商: {api_provider}")
+        logger.info(f"Received chat request: {message.content}")
+        # Use globally configured API provider
+        api_provider = API_PROVIDER
+        logger.info(f"Current API provider: {api_provider}")
         
         if api_provider == "zhipu":
-            logger.info("使用智谱 API")
+            logger.info("Using Zhipu API")
             response_text = await get_zhipu_response(message.content)
         else:
-            logger.info("使用 Deepseek API")
+            logger.info("Using Deepseek API")
             response_text = await get_deepseek_response(message.content)
             
-        logger.info(f"返回响应: {response_text}")
+        logger.info(f"Returning response: {response_text}")
         return ChatResponse(response=response_text)
     except Exception as e:
-        logger.error(f"处理聊天请求时出错: {str(e)}")
+        logger.error(f"Error processing chat request: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 async def get_deepseek_response(message: str) -> str:
-    """调用 Deepseek API 获取回答"""
+    """Call Deepseek API to get response"""
     api_key = os.getenv("DEEPSEEK_API_KEY")
     if not api_key:
-        logger.error("DEEPSEEK_API_KEY 未设置")
+        logger.error("DEEPSEEK_API_KEY not set")
         raise ValueError("DEEPSEEK_API_KEY is not set")
         
     headers = {
@@ -100,11 +107,11 @@ async def get_deepseek_response(message: str) -> str:
         "messages": [
             {
                 "role": "system",
-                "content": """你扮演音乐伙伴的角色，精通音乐理论和作曲。你会：
-                1. 用简洁专业的语言回答问题，回答不超过150字
-                2. 给出具体的建议和例子
-                3. 涉及和弦时会同时给出和弦符号和具体音符
-                4. 优先使用中文回答，除非用户用其他语言提问"""
+                "content": """You play the role of a music companion, proficient in music theory and composition. You will:
+                1. Answer questions in concise professional language, with responses under 150 characters
+                2. Provide specific suggestions and examples
+                3. When discussing chords, provide both chord symbols and specific notes
+                4. Prioritize answering in Chinese, unless the user asks in another language"""
             },
             {
                 "role": "user",
@@ -115,12 +122,12 @@ async def get_deepseek_response(message: str) -> str:
         "max_tokens": 1000
     }
     
-    max_retries = 3  # 最大重试次数
-    retry_delay = 1  # 重试间隔（秒）
+    max_retries = 3  # Maximum retry attempts
+    retry_delay = 1  # Retry interval (seconds)
     
     for attempt in range(max_retries):
         try:
-            logger.info(f"正在调用 Deepseek API (尝试 {attempt + 1}/{max_retries})")
+            logger.info(f"Calling Deepseek API (attempt {attempt + 1}/{max_retries})")
             async with httpx.AsyncClient() as client:
                 response = await client.post(
                     "https://api.deepseek.com/v1/chat/completions",
@@ -130,39 +137,39 @@ async def get_deepseek_response(message: str) -> str:
                 )
                 response.raise_for_status()
                 response_data = response.json()
-                logger.info("成功获取 Deepseek API 响应")
-                logger.info(f"响应内容: {response_data}")
+                logger.info("Successfully received Deepseek API response")
+                logger.info(f"Response content: {response_data}")
                 if "choices" not in response_data or not response_data["choices"]:
                     raise ValueError("Invalid response format from Deepseek API")
                 return response_data["choices"][0]["message"]["content"]
         except (httpx.HTTPError, Exception) as e:
-            logger.error(f"调用 Deepseek API 时出错 (尝试 {attempt + 1}/{max_retries}): {str(e)}")
+            logger.error(f"Error calling Deepseek API (attempt {attempt + 1}/{max_retries}): {str(e)}")
             if isinstance(e, httpx.HTTPError):
-                logger.error(f"响应状态码: {e.response.status_code if hasattr(e, 'response') else 'Unknown'}")
-                logger.error(f"响应内容: {e.response.text if hasattr(e, 'response') else 'Unknown'}")
-            if attempt < max_retries - 1:  # 如果不是最后一次尝试
-                await asyncio.sleep(retry_delay)  # 等待一段时间后重试
+                logger.error(f"Response status code: {e.response.status_code if hasattr(e, 'response') else 'Unknown'}")
+                logger.error(f"Response content: {e.response.text if hasattr(e, 'response') else 'Unknown'}")
+            if attempt < max_retries - 1:  # If not the last attempt
+                await asyncio.sleep(retry_delay)  # Wait before retrying
                 continue
             raise HTTPException(status_code=500, detail=str(e))
 
 async def get_zhipu_response(message: str) -> str:
-    """调用智谱 API 获取回答"""
+    """Call Zhipu API to get response"""
     api_key = os.getenv("ZHIPU_API_KEY")
-    logger.info("正在获取智谱 API Key")
+    logger.info("Getting Zhipu API Key")
     
     if not api_key:
-        logger.error("ZHIPU_API_KEY 未设置")
+        logger.error("ZHIPU_API_KEY not set")
         raise ValueError("ZHIPU_API_KEY is not set")
 
-    # 解析 API Key
+    # Parse API Key
     try:
         key_id, secret = api_key.split(".")
-        logger.info(f"成功解析智谱 API Key，key_id: {key_id[:4]}...")
+        logger.info(f"Successfully parsed Zhipu API Key, key_id: {key_id[:4]}...")
     except ValueError:
-        logger.error("智谱 API Key 格式错误")
+        logger.error("Invalid Zhipu API Key format")
         raise ValueError("Invalid ZHIPU_API_KEY format")
 
-    # 生成 JWT token
+    # Generate JWT token
     import jwt
     import time
     
@@ -170,31 +177,31 @@ async def get_zhipu_response(message: str) -> str:
     payload = {
         "api_key": key_id,
         "timestamp": timestamp,
-        "exp": timestamp + 3600  # 1小时后过期
+        "exp": timestamp + 3600  # Expires in 1 hour
     }
     
     token = jwt.encode(
         payload,
         secret,
         algorithm="HS256",
-        headers={"alg": "HS256", "sign_type": "SIGN"}  # 添加必要的头部信息
+        headers={"alg": "HS256", "sign_type": "SIGN"}  # Add necessary header information
     )
 
     headers = {
-        "Authorization": token,  # 直接使用 token，不加 Bearer 前缀
+        "Authorization": token,  # Use token directly, without Bearer prefix
         "Content-Type": "application/json"
     }
     
     data = {
-        "model": "glm-4",  # 使用 GLM-4 模型
+        "model": "glm-4",  # Use GLM-4 model
         "messages": [
             {
                 "role": "system",
-                "content": """你扮演音乐伙伴的角色，精通音乐理论和作曲。你会：
-                1. 用简洁专业的语言回答问题，回答不超过150字
-                2. 给出具体的建议和例子
-                3. 涉及和弦时会同时给出和弦符号和具体音符
-                4. 优先使用中文回答，除非用户用其他语言提问"""
+                "content": """You play the role of a music companion, proficient in music theory and composition. You will:
+                1. Answer questions in concise professional language, with responses under 150 characters
+                2. Provide specific suggestions and examples
+                3. When discussing chords, provide both chord symbols and specific notes
+                4. Prioritize answering in Chinese, unless the user asks in another language"""
             },
             {
                 "role": "user",
@@ -207,25 +214,25 @@ async def get_zhipu_response(message: str) -> str:
         "stream": False
     }
     
-    max_retries = 3  # 最大重试次数
-    retry_delay = 1  # 重试间隔（秒）
+    max_retries = 3  # Maximum retry attempts
+    retry_delay = 1  # Retry interval (seconds)
     
     for attempt in range(max_retries):
         try:
-            logger.info(f"正在调用智谱 API (尝试 {attempt + 1}/{max_retries})")
+            logger.info(f"Calling Zhipu API (attempt {attempt + 1}/{max_retries})")
             async with httpx.AsyncClient() as client:
                 response = await client.post(
                     "https://open.bigmodel.cn/api/paas/v4/chat/completions",
                     json=data,
                     headers=headers,
-                    timeout=30.0  # 设置超时时间
+                    timeout=30.0  # Set timeout
                 )
                 response.raise_for_status()
-                logger.info("成功获取智谱 API 响应")
+                logger.info("Successfully received Zhipu API response")
                 return response.json()["choices"][0]["message"]["content"]
         except Exception as e:
-            logger.error(f"调用智谱 API 时出错 (尝试 {attempt + 1}/{max_retries}): {str(e)}")
-            if attempt < max_retries - 1:  # 如果不是最后一次尝试
-                await asyncio.sleep(retry_delay)  # 等待一段时间后重试
+            logger.error(f"Error calling Zhipu API (attempt {attempt + 1}/{max_retries}): {str(e)}")
+            if attempt < max_retries - 1:  # If not the last attempt
+                await asyncio.sleep(retry_delay)  # Wait before retrying
                 continue
             raise HTTPException(status_code=500, detail=str(e)) 
