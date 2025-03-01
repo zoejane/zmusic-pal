@@ -79,7 +79,7 @@ Experience zMusic-Pal and embark on a wonderful musical journey together!
 
 # 简体中文
 
-*[English](#zmusic-pal) | 简体中文*
+*[English](#zmusic-pal--音乐伙伴) | 简体中文*
 
 一个小巧优雅的 Web 应用，用于快速查找调性和和弦，同时配备 AI 伙伴，提供更深入的音乐陪伴。
 
