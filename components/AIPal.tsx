@@ -1,5 +1,7 @@
 "use client"
 
+// Zeabur production: default export is the chat UI; replies go through sendMessage() to FastAPI.
+
 import { useState, useEffect, useRef, type KeyboardEvent } from "react"
 import { CardWrapper } from "./ui/card-wrapper"
 import { Button } from "./ui/button"
