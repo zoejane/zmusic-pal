@@ -38,7 +38,10 @@ assertEqual(getChordNotes("G", "major"), ["G", "B", "D"], "G major notes")
 assertEqual(getChordNotes("B", "dim"), ["B", "D", "F"], "B dim notes")
 
 const cMinor = generateScale("C", "Natural Minor | 自然小调")
-assertEqual(cMinor, ["C", "D", "Eb", "F", "G", "Ab", "Bb"], "C natural minor scale")
+assertEqual(cMinor, ["C", "D", "D#", "F", "G", "G#", "A#"], "C natural minor scale (sharp spelling, same as UI)")
+
+const ebMajor = generateScale("Eb", "Major | 大调")
+assertEqual(ebMajor, ["Eb", "F", "G", "Ab", "Bb", "C", "D"], "Eb major scale (flat spelling)")
 
 if (process.exitCode) {
   console.error("Music theory checks failed.")
