@@ -20,8 +20,8 @@ const robotoSlab = Roboto_Slab({
 
 export const metadata: Metadata = {
   title: 'zMusic-Pal: 小巧优雅的音乐工具',
-  description: '一个轻量级 Web 应用，支持音乐基础功能查询和 AI 辅助创作',
-  metadataBase: new URL('https://zmusic-pal-web.zeabur.app'),
+  description: '一个轻量级 Web 应用，支持音乐基础功能查询（查调、查和弦）',
+  metadataBase: new URL('https://zmusic-pal.zoejane.net'),
   other: {
     'baidu-site-verification': 'codeva-zKIT9ACCCa',
   },
