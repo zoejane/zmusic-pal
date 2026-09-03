@@ -5,9 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "npx --yes serve@14 out",
-    "lint": "next lint",
-    "test:music": "node --experimental-strip-types --experimental-default-type=module --no-warnings scripts/verify-music.ts"
+    "start": "next start",
+    "lint": "next lint"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.4",

@@ -1,10 +1,10 @@
-# backend/ (optional)
+# backend/ (optional leftover)
 
-This FastAPI app is **not required** to use 查调 (Key Finder) or 查和弦 (Chord Finder). Those run entirely in the browser.
+This FastAPI app is **not** what GitHub Pages serves. The public site is `docs/` (vanilla HTML/JS).
 
-GitHub Pages cannot run Python. Do **not** deploy this folder to Pages.
+查调 / 查和弦 do not use this server. **Do not deploy FastAPI to GitHub Pages.**
 
-AI Pal uses this server to call Deepseek (or Zhipu). API keys stay here — never in the Next.js frontend.
+AI Pal (Deepseek) lived here. API keys stay in this folder only — never in `docs/`.
 
 ## Local (optional)
 
