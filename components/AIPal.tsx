@@ -5,7 +5,6 @@ import { CardWrapper } from "./ui/card-wrapper"
 import { Button } from "./ui/button"
 import { Textarea } from "./ui/textarea"
 import { sendMessage } from "@/lib/api"
-import { isAiPalEnabled } from "@/lib/ai"
 import { Send } from "lucide-react"
 import ReactMarkdown from "react-markdown"
 
@@ -14,20 +13,7 @@ interface Message {
   content: string
 }
 
-function AiPalUnavailable() {
-  return (
-    <CardWrapper title="AI Pal | AI 伙伴" className="text-sm w-full">
-      <p className="text-sm text-muted-foreground text-center px-2 py-1 max-w-xl">
-        AI Pal needs a FastAPI server (Deepseek keys stay on the server, never in this static site). It is off on GitHub
-        Pages.
-        <br />
-        AI 伙伴需要 FastAPI 后端（密钥只放在服务器，不会进前端）。当前静态站点已关闭此功能。
-      </p>
-    </CardWrapper>
-  )
-}
-
-function AiPalChat() {
+export default function AIPal() {
   const [input, setInput] = useState("")
   const [messages, setMessages] = useState<Message[]>([])
   const [isLoading, setIsLoading] = useState(false)
@@ -110,7 +96,8 @@ function AiPalChat() {
                   <ReactMarkdown
                     className="prose prose-sm dark:prose-invert max-w-none"
                     components={{
-                      a: ({ ...props }) => <a target="_blank" rel="noopener noreferrer" {...props} />,
+                      // Open links in new tab
+                      a: ({ node, ...props }) => <a target="_blank" rel="noopener noreferrer" {...props} />,
                     }}
                   >
                     {message.content}
@@ -157,9 +144,3 @@ function AiPalChat() {
   )
 }
 
-export default function AIPal() {
-  if (!isAiPalEnabled()) {
-    return <AiPalUnavailable />
-  }
-  return <AiPalChat />
-}
