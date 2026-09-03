@@ -3,75 +3,7 @@
 import { useState, useMemo, Fragment } from "react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { CardWrapper } from "@/components/ui/card-wrapper"
-
-const rootNotes = ["C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"]
-const sharpNotes = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
-const flatNotes = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"]
-const scales = ["Major | 大调", "Natural Minor | 自然小调", "Harmonic Minor | 和声小调", "Melodic Minor | 旋律小调"]
-
-const scalePatterns = {
-  Major: [0, 2, 4, 5, 7, 9, 11],
-  "Natural Minor": [0, 2, 3, 5, 7, 8, 10],
-  "Harmonic Minor": [0, 2, 3, 5, 7, 8, 11],
-  "Melodic Minor": {
-    ascending: [0, 2, 3, 5, 7, 9, 11],
-    descending: [0, 10, 8, 7, 5, 3, 2],
-  },
-}
-
-function getProperNoteName(index: number, rootNote: string): string {
-  const useFlats = ["F", "Bb", "Eb", "Ab", "Db", "Gb"].includes(rootNote)
-  const noteArray = useFlats ? flatNotes : sharpNotes
-  return noteArray[index % 12]
-}
-
-function generateScale(rootNote: string, scaleType: string): string[] | { ascending: string[]; descending: string[] } {
-  const pattern = scalePatterns[scaleType.split(" | ")[0] as keyof typeof scalePatterns]
-  let rootIndex = flatNotes.indexOf(rootNote)
-  if (rootIndex === -1) rootIndex = sharpNotes.indexOf(rootNote)
-
-  if (scaleType.includes("Melodic Minor")) {
-    const p = pattern as { ascending: number[]; descending: number[] }
-    const ascending = p.ascending.map((interval) => getProperNoteName((rootIndex + interval) % 12, rootNote))
-    const descending = p.descending.map((interval) => getProperNoteName((rootIndex + interval) % 12, rootNote))
-    return { ascending, descending }
-  } else {
-    return (pattern as number[]).map((interval) => getProperNoteName((rootIndex + interval) % 12, rootNote))
-  }
-}
-
-function generateTriads(
-  scale: string[] | { ascending: string[]; descending: string[] },
-  scaleType: string,
-): { degree: string; chord: string; notes: string }[] {
-  let triadTypes
-  let scaleNotes: string[]
-
-  if (scaleType.includes("Major")) {
-    triadTypes = ["", "m", "m", "", "", "m", "dim"]
-    scaleNotes = scale as string[]
-  } else if (scaleType.includes("Natural Minor")) {
-    triadTypes = ["m", "dim", "", "m", "m", "", ""]
-    scaleNotes = scale as string[]
-  } else if (scaleType.includes("Harmonic Minor")) {
-    triadTypes = ["m", "dim", "aug", "m", "", "", "dim"]
-    scaleNotes = scale as string[]
-  } else {
-    // Melodic Minor
-    triadTypes = ["m", "m", "aug", "", "", "dim", "dim"]
-    scaleNotes = (scale as { ascending: string[] }).ascending
-  }
-
-  return scaleNotes.slice(0, 6).map((note, index) => {
-    const triadType = triadTypes[index]
-    const chordNotes = [scaleNotes[index], scaleNotes[(index + 2) % 7], scaleNotes[(index + 4) % 7]]
-    return {
-      degree: ["I", "ii", "iii", "IV", "V", "vi"][index],
-      chord: `${note}${triadType}`,
-      notes: chordNotes.join(" - "),
-    }
-  })
-}
+import { rootNotes, scales, generateScale, generateTriads } from "@/lib/music"
 
 export function KeyFinder() {
   const [rootNote, setRootNote] = useState("C")
@@ -136,4 +68,3 @@ export function KeyFinder() {
     </CardWrapper>
   )
 }
-

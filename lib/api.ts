@@ -1,36 +1,44 @@
+import { getAiApiUrl, isAiPalEnabled } from "@/lib/ai"
+
 export async function sendMessage(content: string): Promise<string> {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://zmusic-pal-back.zeabur.app';
+  if (!isAiPalEnabled()) {
+    throw new Error("AI Pal is disabled on this static site. A FastAPI backend is required.")
+  }
+
+  const apiUrl = getAiApiUrl()
+  if (!apiUrl) {
+    throw new Error("AI Pal is enabled but NEXT_PUBLIC_API_URL is not set.")
+  }
 
   try {
     const response = await fetch(`${apiUrl}/api/chat`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
+        "Content-Type": "application/json",
+        Accept: "application/json",
       },
       body: JSON.stringify({ content }),
-    });
+    })
 
     if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`HTTP error! status: ${response.status}, statusText: ${response.statusText}, body: ${errorText}`);
+      const errorText = await response.text()
+      throw new Error(`HTTP error! status: ${response.status}, statusText: ${response.statusText}, body: ${errorText}`)
     }
 
-    const data = await response.json();
-    if (typeof data.response !== 'string') {
-      throw new Error(`Invalid response format from API: ${JSON.stringify(data)}`);
+    const data = await response.json()
+    if (typeof data.response !== "string") {
+      throw new Error(`Invalid response format from API: ${JSON.stringify(data)}`)
     }
 
-    return data.response;
+    return data.response
   } catch (error) {
-    console.error('Error in sendMessage:', error);
-    if (error instanceof TypeError && error.message === 'Failed to fetch') {
-      throw new Error(`Unable to connect to the server (${apiUrl}). Please check your network connection or server status.`);
+    console.error("Error in sendMessage:", error)
+    if (error instanceof TypeError && error.message === "Failed to fetch") {
+      throw new Error(`Unable to connect to the server (${apiUrl}). Please check your network connection or server status.`)
     }
     if (error instanceof Error) {
-      throw error;
+      throw error
     }
-    throw new Error(`Unknown error occurred: ${JSON.stringify(error)}`);
+    throw new Error(`Unknown error occurred: ${JSON.stringify(error)}`)
   }
 }
-

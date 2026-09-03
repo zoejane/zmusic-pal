@@ -1,3 +1,6 @@
+# Optional FastAPI backend for AI Pal only.
+# 查调 / 查和弦 do not use this server. Do not deploy FastAPI to GitHub Pages.
+
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse

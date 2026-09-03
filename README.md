@@ -2,78 +2,68 @@
 
 *English | [简体中文](#简体中文)*
 
-A lightweight and elegant web application for quick key and chord lookup, featuring an AI companion for deeper musical exploration.
+A tiny, mobile-friendly **static** page for key and chord lookup. Scales and chords are **computed in the browser** (plain JavaScript). No FastAPI, no Deepseek, no API keys, no extra host.
 
-[zMusic-Pal](https://zmusic-pal.zoejane.net)
+Live (custom domain, after DNS): [https://zmusic-pal.zoejane.net](https://zmusic-pal.zoejane.net)
 
-## Core Features
+## What GitHub Pages serves
 
-### 1. Key Finder
-Enter a key (e.g., F major) to view:
+The public site is the vanilla page in **`docs/`** (`index.html` + CSS + JS). That is the skin. The music is an algorithm in `docs/music.js`, not a database.
 
-**Scale:**  
-F G A Bb C D E
+| Feature | On GitHub Pages |
+| --- | --- |
+| Key Finder / 查调 | Yes — client-side |
+| Chord Finder / 查和弦 | Yes — client-side |
+| AI Pal / AI 伙伴 | **Not on this static version** (one-line note only) |
 
-**Common Triads:**
+The Next.js app and `backend/` FastAPI tree are **kept in git** as the old project. They are **not** required to use or deploy the site. **Do not deploy FastAPI to GitHub Pages** (Pages only serves files).
+
+`.env.production` in the repo is a public frontend env file (no secrets). It used to point `NEXT_PUBLIC_API_URL` at a Zeabur FastAPI host; the Pages site does not call it.
+
+## Enable GitHub Pages (no build)
+
+Simplest: publish the `/docs` folder from the default branch.
+
+1. Merge this to `main`.
+2. Repo **Settings → Pages**.
+3. **Build and deployment → Source:** Deploy from a branch.
+4. **Branch:** `main`, **folder:** `/docs`. Save.
+
+GitHub will use `docs/CNAME` (`zmusic-pal.zoejane.net`). Until DNS is pointed, use the `https://zoejane.github.io/zmusic-pal/` URL GitHub shows.
+
+**DNS** when ready:
+
 ```
-I     F      F - A - C
-ii    Gm     G - Bb - D
-iii   Am     A - C - E
-IV    Bb     Bb - D - F
-V     C      C - E - G
-vi    Dm     D - F - A
+zmusic-pal.zoejane.net  CNAME  zoejane.github.io
 ```
 
-### 2. Chord Finder
-Select a chord (e.g., Am) to see its component notes (e.g., A - C - E).
+Then confirm the custom domain in Pages settings and enable HTTPS.
 
-### 3. AI Pal
-Ask any music-related questions, and AI Pal will provide creative support and practical advice. For example:
-- "What are common chord progressions in rock music?"
-- "How to reharmonize a pop song?"
+There is no Next.js export and no npm step for hosting. Optional check: `node docs/verify.cjs`.
 
-### 4. Mobile-Friendly
-Access and use on mobile devices for music exploration anytime, anywhere.
+Open locally:
 
-## Quick Start
-
-### Website
-Visit directly: [zMusic-Pal](https://zmusic-pal.zoejane.net)
-
-### Local Development
-
-1. Clone the repository:
 ```bash
-git clone https://github.com/zoejane/zmusic-pal.git
-cd zmusic-pal
+# any static server, e.g.
+python3 -m http.server 4173 --directory docs
 ```
 
-2. Install dependencies:
-```bash
-npm install
-```
+Then http://localhost:4173/
 
-3. Start the development server:
-```bash
-npm run dev
-```
+## Core features
 
-4. Open in browser: http://localhost:3000
+### Key Finder / 查调
+Example — F major: `F G A Bb C D E` and triads I F, ii Gm, iii Am, IV Bb, V C, vi Dm.
 
-## Tech Stack
-- Frontend: Next.js + React + TypeScript + Tailwind CSS
-- Backend: FastAPI + Python
-- AI Integration: Deepseek API
+### Chord Finder / 查和弦
+Example — Am: `A - C - E`.
+
+## Old Next.js + FastAPI (optional, not for Pages)
+
+`npm install && npm run dev` still runs the leftover Next app. `backend/` is the old AI Pal server (Deepseek keys belong only there, never in `docs/`). See `backend/README.md`.
 
 ## License
 MIT © 2025 ZoeJane
-
-## About
-zMusic-Pal is a compact and efficient music tool designed for creators.
-
-Whether you're composing, practicing, or exploring music theory, it provides inspiration and support.
-
-Experience zMusic-Pal and embark on a wonderful musical journey together!
 
 ---
 
@@ -81,80 +71,53 @@ Experience zMusic-Pal and embark on a wonderful musical journey together!
 
 *[English](#zmusic-pal--音乐伙伴) | 简体中文*
 
-一个小巧优雅的 Web 应用，用于快速查找调性和和弦，同时配备 AI 伙伴，提供更深入的音乐陪伴。
+小巧、适合手机的**静态页**：查调和查和弦都在浏览器里用算法算出来。没有 FastAPI、没有 Deepseek、没有密钥、也不需要再开一台主机。
 
-[zMusic-Pal](https://zmusic-pal.zoejane.net)
+线上（DNS 指好后）：[https://zmusic-pal.zoejane.net](https://zmusic-pal.zoejane.net)
 
-## 核心功能
+## GitHub Pages 发布的是什么
 
-### 1. 查调
-输入调性（如 F 大调），查看：
+公开站点就是 **`docs/`** 里的 HTML/CSS/JS。乐理在 `docs/music.js` 里计算，不是数据库。
 
-**音阶:**  
-F G A Bb C D E
+| 功能 | GitHub Pages |
+| --- | --- |
+| 查调 | 有，纯前端 |
+| 查和弦 | 有，纯前端 |
+| AI 伙伴 | **静态版不含**（只留一行说明） |
 
-**常用三和弦:**
+仓库里仍保留原来的 Next.js 和 `backend/`，方便对照历史。**用站、上线都不需要它们。不要把 FastAPI 部署到 Pages。**
+
+仓库里的 `.env.production` 是公开前端变量（没有密钥），以前指向 Zeabur 上的 FastAPI；Pages 站点不会去请求它。
+
+## 打开 GitHub Pages（不用构建）
+
+最简单：用默认分支的 `/docs` 目录。
+
+1. 合并到 `main`。
+2. 仓库 **Settings → Pages**。
+3. **Source：** Deploy from a branch。
+4. **Branch：** `main`，**folder：** `/docs`。保存。
+
+`docs/CNAME` 已写成 `zmusic-pal.zoejane.net`。DNS 未指向前，可用 GitHub 给出的 `https://zoejane.github.io/zmusic-pal/`。
+
+**DNS：**
+
 ```
-I     F      F - A - C
-ii    Gm     G - Bb - D
-iii   Am     A - C - E
-IV    Bb     Bb - D - F
-V     C      C - E - G
-vi    Dm     D - F - A
+zmusic-pal.zoejane.net  CNAME  zoejane.github.io
 ```
 
-### 2. 查和弦
-选择和弦（如 Am），查看组成音（如 A - C - E）。
+然后在 Pages 里确认自定义域名并打开 HTTPS。
 
-### 3. AI 伙伴
-提出任何音乐相关问题，AI 伙伴将提供创意支持和实用建议。例如：
-- "摇滚中常见的和弦进程是什么？"
-- "如何为一首流行歌曲重新配和弦？"
+托管不需要 Next 导出，也不需要 npm。本地检查：`node docs/verify.cjs`。
 
-### 4. 移动端友好
-支持移动设备访问和使用，随时随地进行音乐探索。
-
-## 快速开始
-
-### 在线体验
-直接访问：[zMusic-Pal 在线体验](https://zmusic-pal.zoejane.net)
-
-### 本地运行（可选）
-
-1. 克隆项目：
 ```bash
-git clone https://github.com/zoejane/zmusic-pal.git
-cd zmusic-pal
+python3 -m http.server 4173 --directory docs
 ```
 
-2. 安装依赖：
-```bash
-npm install
-```
-
-3. 启动项目：
-```bash
-npm run dev
-```
-
-4. 打开浏览器访问：http://localhost:3000
-
-## 技术架构
-- 前端：Next.js + React + TypeScript + Tailwind CSS
-- 后端：FastAPI + Python
-- AI 集成：Deepseek API
-
-## 许可证
-MIT © 2025 ZoeJane
-
-## 关于
-zMusic-Pal 是一个小巧而高效的音乐工具，专为创作者设计。
-
-无论是作曲、练习还是探索音乐理论，它都能为您提供灵感和支持。
-
-体验 zMusic-Pal，一起开启音乐的美好旅程！
+打开 http://localhost:4173/
 
 ## 更新日志
 
+- 20260903 GitHub Pages 改为 `docs/` 纯静态页；查调 / 查和弦在浏览器计算；AI 伙伴不在静态版
 - 20250121 zoejane 添加英文版本
 - 20250117 zoejane 初始化项目
